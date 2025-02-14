@@ -42,13 +42,8 @@ Facility Management
 
 Facility Report Management
 - `GET /api/facility-reports` - Get all facility reports
-- `GET /api/facility-reports/{reportId}` - Get facility report by ID
-- `POST /api/facility-reports` - Create a new facility report
+- `GET /api/facility-reports/house/{houseId}` - Get reports for specific house
 - `PUT /api/facility-reports/{reportId}/status` - Update report status
-- `POST /api/facility-reports/{reportId}/comments` - Add a comment to a report
-- `GET /api/facility-reports/status/{status}` - Get reports by status
-- `GET /api/facility-reports/employee/{employeeId}` - Get reports by employee
-- `DELETE /api/facility-reports/{reportId}` - Delete a facility report
 
 Database Schema
 
