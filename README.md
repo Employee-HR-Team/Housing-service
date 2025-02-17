@@ -2,13 +2,23 @@ Housing Service
 
 <img width="473" alt="housing service" src="https://github.com/user-attachments/assets/102d6324-7544-4743-aae5-7c8ebbe7cdcf" />
 
+Testing:
+
+For frontend do npm install, then npm start
+For backend do mvn clean install, then mvn spring-boot:run
+
+also need to run housing.sql file locally in mysql database
+
+
+
+Frontend runs on port 3001 and backend runs on port 8081  
+#Change this to any other port if needed
+
 
 Housing Service Microservice
 
 This microservice is part of the Employee Onboarding System, responsible for managing employee housing arrangements, facilities, and facility reports.
 
-Frontend runs on port 3001 and backend runs on port 8081  
-#Change this to any other port if needed
 
 Features
 
