@@ -156,3 +156,83 @@ FROM FacilityReport fr
 JOIN Facility f ON fr.FacilityID = f.ID
 LEFT JOIN FacilityReportDetail frd ON fr.ID = frd.FacilityReportID
 ORDER BY fr.CreateDate DESC, frd.CreateDate ASC;
+USE hr_portal;
+
+-- insert houses using existing landlord IDs
+INSERT INTO House (LandlordID, Address, MaxOccupant) VALUES
+(4, '789 Summer Street, Boston, MA 02110', 5),  -- Michael Wilson
+(4, '42 Winter Lane, Boston, MA 02111', 3),     -- Michael Wilson
+(5, '156 Beacon Hill, Boston, MA 02108', 4),    -- Sarah Anderson
+(6, '23 Harvard Ave, Cambridge, MA 02138', 6),  -- David Thompson
+(7, '88 Tech Square, Cambridge, MA 02139', 4);  -- Emily Taylor
+
+-- Get the IDs of the newly inserted houses
+SET @house1_id = (SELECT ID FROM House WHERE Address LIKE '%Summer Street%');
+SET @house2_id = (SELECT ID FROM House WHERE Address LIKE '%Winter Lane%');
+SET @house3_id = (SELECT ID FROM House WHERE Address LIKE '%Beacon Hill%');
+SET @house4_id = (SELECT ID FROM House WHERE Address LIKE '%Harvard Ave%');
+SET @house5_id = (SELECT ID FROM House WHERE Address LIKE '%Tech Square%');
+
+-- Insert facilities with correct house IDs
+INSERT INTO Facility (HouseID, Type, Description, Quantity) VALUES
+-- For first house (Summer Street)
+(@house1_id, 'Bed', 'Queen size beds', 5),
+(@house1_id, 'Desk', 'Study desks', 3),
+(@house1_id, 'Chair', 'Office chairs', 5),
+(@house1_id, 'Mattress', 'Memory foam mattresses', 5),
+
+-- For second house (Winter Lane)
+(@house2_id, 'Bed', 'Twin XL beds', 3),
+(@house2_id, 'Desk', 'Computer desks', 3),
+(@house2_id, 'Chair', 'Ergonomic chairs', 3),
+
+-- For Beacon Hill house
+(@house3_id, 'Bed', 'King size beds', 4),
+(@house3_id, 'Sofa', 'Leather sofa', 2),
+(@house3_id, 'Table', 'Dining table', 1),
+
+-- For Harvard Ave house
+(@house4_id, 'Bed', 'Full size beds', 6),
+(@house4_id, 'Desk', 'Standing desks', 6),
+(@house4_id, 'Chair', 'Gaming chairs', 6);
+
+-- Get facility IDs for reports
+SET @facility1_id = (SELECT ID FROM Facility WHERE Description = 'Standing desks' LIMIT 1);
+SET @facility2_id = (SELECT ID FROM Facility WHERE Description = 'Gaming chairs' LIMIT 1);
+SET @facility3_id = (SELECT ID FROM Facility WHERE Description = 'Leather sofa' LIMIT 1);
+SET @facility4_id = (SELECT ID FROM Facility WHERE Description = 'Memory foam mattresses' LIMIT 1);
+
+-- Insert facility reports with correct facility IDs
+INSERT INTO FacilityReport (FacilityID, EmployeeID, Title, Description, Status) VALUES
+(@facility1_id, 301, 'Standing Desk Wobble', 'Desk is unstable when in standing position', 'Open'),
+(@facility2_id, 302, 'Chair Adjustment Broken', 'Height adjustment mechanism not working', 'InProgress'),
+(@facility3_id, 303, 'Sofa Stain', 'Large coffee stain on leather sofa', 'Open'),
+(@facility4_id, 304, 'Mattress Replacement', 'Springs are coming through', 'Closed');
+
+-- Get report IDs for comments
+SET @report1_id = (SELECT ID FROM FacilityReport WHERE Title = 'Standing Desk Wobble');
+SET @report2_id = (SELECT ID FROM FacilityReport WHERE Title = 'Chair Adjustment Broken');
+SET @report3_id = (SELECT ID FROM FacilityReport WHERE Title = 'Sofa Stain');
+SET @report4_id = (SELECT ID FROM FacilityReport WHERE Title = 'Mattress Replacement');
+
+-- Insert report comments with correct report IDs
+INSERT INTO FacilityReportDetail (FacilityReportID, EmployeeID, Comment) VALUES
+-- Standing Desk Report
+(@report1_id, 301, 'Initial inspection: desk wobbles when raised above 40 inches'),
+(@report1_id, 401, 'Scheduled maintenance for Friday'),
+(@report1_id, 301, 'Please expedite, affecting work productivity'),
+
+-- Chair Report
+(@report2_id, 302, 'Chair cannot maintain height, drops slowly'),
+(@report2_id, 402, 'Ordered replacement pneumatic cylinder'),
+(@report2_id, 402, 'Parts arrived, scheduling repair'),
+
+-- Sofa Report
+(@report3_id, 303, 'Professional cleaning attempt unsuccessful'),
+(@report3_id, 403, 'Getting quotes for reupholstery'),
+
+-- Mattress Report
+(@report4_id, 304, 'Mattress determined beyond repair'),
+(@report4_id, 404, 'New mattress ordered'),
+(@report4_id, 404, 'Replacement completed'),
+(@report4_id, 304, 'Confirming new mattress received and installed');
